@@ -89,7 +89,7 @@ defmodule GRPClassify do
 
         for n <- [1, 2, 5, 7, 10] do
           {micros, _} = :timer.tc(fn -> run_from_disk(false, n) end)
-          %{n: n, millis_t: Float.round(micros / 1000, 3)}
+          %{n: n * 4, millis_t: Float.round(micros / 1000, 3)}
         end
       end)
       |> List.flatten()
@@ -107,7 +107,7 @@ defmodule GRPClassify do
 
     results
     |> format_latex()
-    |> write_to_file("./results_#{model}_#{day}#{month_str}#{year}.tex")
+    |> write_to_file("./results_GPU_#{model}_#{day}#{month_str}#{year}.tex")
 
     results
   end

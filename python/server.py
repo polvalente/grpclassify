@@ -33,7 +33,11 @@ class Classifier:
 
         graph = tf.get_default_graph()
 
-        session = tf.Session(graph=graph)
+        # CPU
+        # session = tf.Session(graph=graph)
+
+        # GPU
+        session = tf.Session(graph=graph, config=tf.ConfigProto(log_device_placement=True))
         set_session(session)
         # try:
         if model_type is None:
