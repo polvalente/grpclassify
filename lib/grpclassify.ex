@@ -107,7 +107,7 @@ defmodule GRPClassify do
 
     results
     |> format_latex()
-    |> write_to_file("./results_GPU_#{model}_#{day}#{month_str}#{year}.tex")
+    |> write_to_file("./results_CPU_#{model}_#{day}#{month_str}#{year}.tex")
 
     results
   end
