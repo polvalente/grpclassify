@@ -10,7 +10,7 @@ message Image {
 
 message ImageRequest {
     string sender_pid = 1;
-    Image images = 2;
+    repeated Image images = 2;
 }
 
 message ClassificationResult {
@@ -19,7 +19,7 @@ message ClassificationResult {
 
 message ImageResult {
     string sender_pid = 1;
-    ClassificationResult classifications = 2;
+    repeated ClassificationResult classifications = 2;
     uint32 total_execution_time = 3;
 }
 

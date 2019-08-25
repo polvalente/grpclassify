@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='classipy',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0e\x63lassipy.proto\x12\x08\x63lassipy\"I\n\x05Image\x12\x10\n\x08\x66ilename\x18\x01 \x01(\t\x12\x0e\n\x06height\x18\x02 \x01(\r\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\x0c\"C\n\x0cImageRequest\x12\x12\n\nsender_pid\x18\x01 \x01(\t\x12\x1f\n\x06images\x18\x02 \x01(\x0b\x32\x0f.classipy.Image\"(\n\x14\x43lassificationResult\x12\x10\n\x08\x63\x61tegory\x18\x01 \x01(\t\"x\n\x0bImageResult\x12\x12\n\nsender_pid\x18\x01 \x01(\t\x12\x37\n\x0f\x63lassifications\x18\x02 \x01(\x0b\x32\x1e.classipy.ClassificationResult\x12\x1c\n\x14total_execution_time\x18\x03 \x01(\r2N\n\x0fImageClassifier\x12;\n\x08\x43lassify\x12\x16.classipy.ImageRequest\x1a\x15.classipy.ImageResult\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0e\x63lassipy.proto\x12\x08\x63lassipy\"I\n\x05Image\x12\x10\n\x08\x66ilename\x18\x01 \x01(\t\x12\x0e\n\x06height\x18\x02 \x01(\r\x12\r\n\x05width\x18\x03 \x01(\r\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\x0c\"C\n\x0cImageRequest\x12\x12\n\nsender_pid\x18\x01 \x01(\t\x12\x1f\n\x06images\x18\x02 \x03(\x0b\x32\x0f.classipy.Image\"(\n\x14\x43lassificationResult\x12\x10\n\x08\x63\x61tegory\x18\x01 \x01(\t\"x\n\x0bImageResult\x12\x12\n\nsender_pid\x18\x01 \x01(\t\x12\x37\n\x0f\x63lassifications\x18\x02 \x03(\x0b\x32\x1e.classipy.ClassificationResult\x12\x1c\n\x14total_execution_time\x18\x03 \x01(\r2N\n\x0fImageClassifier\x12;\n\x08\x43lassify\x12\x16.classipy.ImageRequest\x1a\x15.classipy.ImageResult\"\x00\x62\x06proto3')
 )
 
 
@@ -94,8 +94,8 @@ _IMAGEREQUEST = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='images', full_name='classipy.ImageRequest.images', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -163,8 +163,8 @@ _IMAGERESULT = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='classifications', full_name='classipy.ImageResult.classifications', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),

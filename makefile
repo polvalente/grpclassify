@@ -16,3 +16,5 @@ proto:
 	python -m grpc_tools.protoc -I$(SRC) --python_out=$(PYTHON_DEST) --grpc_python_out=$(PYTHON_DEST) $(SRC)/*.proto
 	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/*.proto
 
+server:
+	python -m python

@@ -22,12 +22,12 @@ defmodule Classipy.ImageRequest do
 
   @type t :: %__MODULE__{
           sender_pid: String.t(),
-          images: Classipy.Image.t() | nil
+          images: [Classipy.Image.t()]
         }
   defstruct [:sender_pid, :images]
 
   field :sender_pid, 1, type: :string
-  field :images, 2, type: Classipy.Image
+  field :images, 2, repeated: true, type: Classipy.Image
 end
 
 defmodule Classipy.ClassificationResult do
@@ -48,13 +48,13 @@ defmodule Classipy.ImageResult do
 
   @type t :: %__MODULE__{
           sender_pid: String.t(),
-          classifications: Classipy.ClassificationResult.t() | nil,
+          classifications: [Classipy.ClassificationResult.t()],
           total_execution_time: non_neg_integer
         }
   defstruct [:sender_pid, :classifications, :total_execution_time]
 
   field :sender_pid, 1, type: :string
-  field :classifications, 2, type: Classipy.ClassificationResult
+  field :classifications, 2, repeated: true, type: Classipy.ClassificationResult
   field :total_execution_time, 3, type: :uint32
 end
 
