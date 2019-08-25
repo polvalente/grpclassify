@@ -1,0 +1,28 @@
+syntax = "proto3";
+package classipy;
+
+message Image {
+    string filename = 1;
+    uint32 height = 2;
+    uint32 width = 3;
+    bytes content = 4;
+}
+
+message ImageRequest {
+    string sender_pid = 1;
+    Image images = 2;
+}
+
+message ClassificationResult {
+    string category = 1;
+}
+
+message ImageResult {
+    string sender_pid = 1;
+    ClassificationResult classifications = 2;
+    uint32 total_execution_time = 3;
+}
+
+service ImageClassifier {
+    rpc Classify(ImageRequest) returns (ImageResult) {};
+}
