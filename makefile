@@ -1,7 +1,7 @@
 SRC=./interop
 ELIXIR_DEST=./apps/grpclassify/lib/interop
 PYTHON_DEST=./python/interop
-ELIXIR_VIDEO_SOURCE_DEST=./apps/video_source/lib/interop
+ELIXIR_VIDEO_SERVER_DEST=./apps/video_server/lib/interop
 
 all: setup proto
 
@@ -14,10 +14,11 @@ setup:
 	@mix compile
 
 proto:
-	python -m grpc_tools.protoc -I$(SRC) --python_out=$(PYTHON_DEST) --grpc_python_out=$(PYTHON_DEST) $(SRC)/*.proto
-	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/*.proto
-	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/*.proto
-	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_VIDEO_SOURCE_DEST) $(SRC)/*.proto
+	python -m grpc_tools.protoc -I$(SRC) --python_out=$(PYTHON_DEST) --grpc_python_out=$(PYTHON_DEST) $(SRC)/classipy.proto
+	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/classipy.proto
+
+	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/video_server.proto
+	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_VIDEO_SERVER_DEST) $(SRC)/video_server.proto
 
 server:
 	python -m python

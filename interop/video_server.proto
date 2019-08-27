@@ -1,0 +1,24 @@
+syntax = "proto3";
+package video_server;
+
+message Frame {
+    string iso_8601_timestamp = 1;
+    string id = 2;
+    uint32 height = 3;
+    uint32 width = 4;
+    bytes content = 5;
+}
+
+message Request {
+    string stream_id = 1;
+    string frame_id = 2;
+}
+
+message Response {
+    Frame frame = 1;
+    string next_frame_id = 2;
+}
+
+service VideoServer {
+    rpc get_frame(Request) returns (Response) {};
+}
