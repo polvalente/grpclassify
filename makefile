@@ -1,6 +1,7 @@
-SRC="./interop"
-ELIXIR_DEST="./lib/interop"
-PYTHON_DEST="./python/interop"
+SRC=./interop
+ELIXIR_DEST=./apps/grpclassify/lib/interop
+PYTHON_DEST=./python/interop
+ELIXIR_VIDEO_SOURCE_DEST=./apps/video_source/lib/interop
 
 all: setup proto
 
@@ -15,6 +16,8 @@ setup:
 proto:
 	python -m grpc_tools.protoc -I$(SRC) --python_out=$(PYTHON_DEST) --grpc_python_out=$(PYTHON_DEST) $(SRC)/*.proto
 	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/*.proto
+	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_DEST) $(SRC)/*.proto
+	protoc -I$(SRC) --elixir_out=plugins=grpc:$(ELIXIR_VIDEO_SOURCE_DEST) $(SRC)/*.proto
 
 server:
 	python -m python
