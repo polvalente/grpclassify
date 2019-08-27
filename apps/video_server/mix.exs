@@ -50,7 +50,8 @@ defmodule VideoServer.Mixfile do
          override: true
        ]},
       {:protobuf, "~> 0.6.1"},
-      {:grpc, github: "elixir-grpc/grpc"}
+      {:grpc, github: "elixir-grpc/grpc"},
+      {:nimble_csv, "~> 0.3"}
     ]
   end
 

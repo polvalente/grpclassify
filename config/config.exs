@@ -19,8 +19,6 @@ import Config
 
 import Config
 
-config :logger, backends: []
-
 config :grpclassify, GRPClassify,
   model_path: "models/catsdogs/cnn_catsdogs_50.h5",
   image_path: "images/catsdogs/50"
@@ -55,6 +53,7 @@ config :video_server, VideoServer.Repo,
   password: "postgres",
   database: "video_server_dev",
   hostname: "localhost",
+  port: "5432",
   pool_size: 10
 
 config :logger, :console,

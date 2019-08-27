@@ -13,4 +13,5 @@ config :video_server, VideoServer.Repo,
   password: "postgres",
   database: "video_server_test",
   hostname: "localhost",
+  port: 5437,
   pool: Ecto.Adapters.SQL.Sandbox

@@ -1,0 +1,4 @@
+If you publish results using the data, please acknowledge the data as coming from the EC Funded CAVIAR project/IST 2001 37540, found at URL: http://homepages.inf.ed.ac.uk/rbf/CAVIAR/.
+
+url: http://homepages.inf.ed.ac.uk/rbf/CAVIARDATA1/
+visitado em: 27 agosto 2019

@@ -18,7 +18,7 @@ defmodule GRPClassify do
     ImageClassifier.Stub
   }
 
-  def classify(images, convert_to_grayscale?) do
+  def classify(images, _convert_to_grayscale?) do
     {:ok, channel} = GRPC.Stub.connect("localhost:8000")
 
     images =
