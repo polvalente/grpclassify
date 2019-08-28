@@ -37,13 +37,14 @@ defmodule CameraMock.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.4"},
+      {:phoenix, "~> 1.4.9"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:ecto, "~> 3.1"},
       {:ecto_sql, "~> 3.1.6"},
       {:protobuf, "~> 0.6.1"},
-      {:grpc, github: "elixir-grpc/grpc", override: true},
+      {:grpc, github: "elixir-grpc/grpc"},
+      {:poison, "~> 4.0.1"},
       {:cowboy,
        [
          env: :prod,

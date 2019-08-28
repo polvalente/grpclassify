@@ -28,7 +28,16 @@ defmodule GRPClassify.MixProject do
   defp deps do
     [
       {:protobuf, "~> 0.6.1"},
-      {:grpc, github: "elixir-grpc/grpc", override: true}
+      {:grpc, github: "elixir-grpc/grpc"},
+      {:cowboy,
+       [
+         env: :prod,
+         git: "https://github.com/elixir-grpc/cowboy.git",
+         tag: "grpc-2.6.3",
+         override: true
+       ]},
+      {:phoenix, "~> 1.4.9"},
+      {:poison, "~> 4.0.1"}
     ]
   end
 end

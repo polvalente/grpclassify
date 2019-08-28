@@ -61,7 +61,7 @@ config :phoenix, :stacktrace_depth, 20
 
 config :grpclassify, GRPClassify.Worker,
   target_url: "localhost:8000",
-  target_streams: [0, 1, 2],
+  streams_to_process: [0, 1, 2],
   classifier_url: "localhost:8001"
 
 if Mix.env() == :test do

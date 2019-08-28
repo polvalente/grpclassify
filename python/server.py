@@ -60,11 +60,14 @@ class Classifier:
         bundle = tf.saved_model.loader.load(
             session, ['serve'], model_path)
         tf.graph_util.import_graph_def(bundle.graph_def)
+        label_map = dict()
         with open(model_path + '/labels.pbtxt', 'r') as f:
             label_names = [format_line(line) for line in f.readlines(
             ) if line.lstrip().rstrip().startswith('display_name')]
-        labels = tensorflow_datasets.features.ClassLabel(names=label_names)
-        return PseudoModel(session, labels, model_type)
+            for i, v in enumerate(label_names):
+                label_map[i + 1] = v
+
+        return PseudoModel(session, label_map, model_type)
 
 
 class PseudoModel():
@@ -78,21 +81,46 @@ class PseudoModel():
         def get_tensor(name):
             return self.session.graph.get_tensor_by_name(name)
 
-        if self.model_type == b"ssd_mobilenet":
+        def filter_zero_scores(results):
+            limit = [n for n in results['num_detections'].astype(np.int64)]
+
+            filtered = {'detection_boxes': [],
+                        'detection_classes': [], 'detection_scores': []}
+            for dim, n in enumerate(limit):
+                filtered['detection_boxes'].append(
+                    results['detection_boxes'][dim][:n][:])
+
+                filtered['detection_classes'].append(
+                    results['detection_classes'][dim][:n])
+
+                filtered['detection_scores'].append(
+                    results['detection_scores'][dim][:n])
+
+            return filtered
+
+        print("model_type:", self.model_type)
+        if self.model_type == "ssd_mobilenet":
             image_tensor = get_tensor("image_tensor:0")
 
             fetches = [get_tensor(x) for x in ["detection_boxes:0", "detection_classes:0",
                                                "detection_scores:0", "num_detections:0"]]
 
             results = self.session.run(fetches, feed_dict={image_tensor: data})
-            results = [x.tolist() for x in results]
-            results[1] = [self.labels.int2str(int(x)) for x in results[1][0]]
-            return results
+            # results = [x.tolist() for x in results]
+            results[1] = np.array(results[1]).astype(np.int64)
+            results = {
+                'detection_boxes': results[0],
+                'detection_classes': np.array([[self.labels[x] for x in frame_result] for frame_result in results[1]]),
+                'detection_scores': results[2],
+                'num_detections': results[3]
+            }
+
+            return filter_zero_scores(results)
 
 
 def np_array_from_image_byte_array(image_byte_array, gray=False):
     # reads grayscale PIL.Images from bytestream list
-    imgs = [Image.open(io.BytesIO(x)) for x in image_byte_array]
+    imgs = [Image.open(io.BytesIO(x)).convert("RGB") for x in image_byte_array]
     if gray:
         imgs = np.array([np.array(img.convert('L')) / 255.0 for img in imgs])
         imgs = imgs.reshape(tuple(list(imgs.shape) + [1]))
@@ -109,34 +137,38 @@ def classify(image_byte_array=[], gray=False):
         set_session(session)
         data = np_array_from_image_byte_array(image_byte_array, gray)
         preds = model.predict(data)
-        try:
-            return preds.tolist()
-        except:
-            return preds
+        return preds
+        # try:
+        #     return preds.tolist()
+        # except:
+        #     return preds
 
 
 class ImageClassifierServicer(classipy_pb2_grpc.ImageClassifierServicer):
     def Classify(self, request, context):
         global classifier
         sender_pid = request.sender_pid
-        # print([i.filename for i in request.images])
 
-        def format_result(result):
-            as_idx = [x.index(max(x)) for x in result]
-            classes = ['cat', 'dog']
-            as_class = [classipy_pb2.ClassificationResult(
-                category=classes[idx]) for idx in as_idx]
-            return as_class
+        print_header("Start Classification")
+        classification_result = classify(
+            [i.content for i in request.images], False)
 
-        classification_result = format_result(classify(
-            [i.content for i in request.images], True))
+        print("* Finished classification")
 
-        # print(classification_result)
+        def format_and_dump(result):
+            formatted = []
+            keys = ['detection_boxes', 'detection_scores', 'detection_classes']
+            for n in range(len(request.images)):
+                converted = [[key, result[key][n].tolist()] for key in keys]
+                interop_result = classipy_pb2.ClassificationResult(
+                    category=json.dumps(dict(converted)))
+                formatted.append(interop_result)
+            return formatted
 
         result = classipy_pb2.ImageResult(
             sender_pid=sender_pid,
             total_execution_time=0,
-            classifications=classification_result
+            classifications=format_and_dump(classification_result)
         )
 
         return result
@@ -176,7 +208,7 @@ def serve():
     model_path = get_model_path('./config/config.exs')
 
     print_header("Building classifier")
-    classifier = Classifier(model_path, "ssd")
+    classifier = Classifier(model_path, "ssd_mobilenet")
 
     print_header("Building server")
     servicer = ImageClassifierServicer()

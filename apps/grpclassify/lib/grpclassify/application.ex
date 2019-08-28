@@ -8,7 +8,7 @@ defmodule GRPClassify.Application do
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: GRPClassify.Worker.start_link(arg)
-      # {GRPClassify.Worker, arg}
+      {GRPClassify.ClassificationStorage, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
