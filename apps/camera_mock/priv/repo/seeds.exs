@@ -5,12 +5,12 @@
 # Inside the script, you can read and write to any of your
 # repositories directly:
 #
-#     VideoServer.Repo.insert!(%VideoServer.SomeSchema{})
+#     CameraMock.Repo.insert!(%CameraMock.SomeSchema{})
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias VideoServer.Repo
+alias CameraMock.Repo
 
 {:ok, _} = Application.ensure_all_started(:postgrex)
 NimbleCSV.define(Parser, separator: "\t", escape: "\"")
@@ -41,7 +41,7 @@ base_path
     {id, ""} = Integer.parse(id)
     {num_people, ""} = Integer.parse(num_people)
 
-    Repo.insert!(%VideoServer.Schemas.Frame{
+    Repo.insert!(%CameraMock.Schemas.Frame{
       stream_id: stream_id,
       id: id,
       timestamp: timestamp,

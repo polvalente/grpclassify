@@ -1,4 +1,4 @@
-defmodule VideoServer.Repo.Migrations.AddFrames do
+defmodule CameraMock.Repo.Migrations.AddFrames do
   use Ecto.Migration
 
   def change do

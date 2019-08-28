@@ -1,4 +1,4 @@
-# VideoServer
+# CameraMock
 
 To start your Phoenix server:
 
