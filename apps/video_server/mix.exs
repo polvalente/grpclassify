@@ -11,7 +11,7 @@ defmodule VideoServer.Mixfile do
       lockfile: "../../mix.lock",
       elixir: "~> 1.4",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -37,18 +37,9 @@ defmodule VideoServer.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.4"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
-      {:gettext, "~> 0.11"},
-      {:cowboy,
-       [
-         env: :prod,
-         git: "https://github.com/elixir-grpc/cowboy.git",
-         tag: "grpc-2.6.3",
-         override: true
-       ]},
+      {:ecto, "~> 3.1"},
+      {:ecto_sql, "~> 3.1.6"},
       {:protobuf, "~> 0.6.1"},
       {:grpc, github: "elixir-grpc/grpc"},
       {:nimble_csv, "~> 0.3"}

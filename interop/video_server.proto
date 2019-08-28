@@ -2,7 +2,7 @@ syntax = "proto3";
 package video_server;
 
 message Frame {
-    string iso_8601_timestamp = 1;
+    string timestamp = 1;
     string id = 2;
     uint32 height = 3;
     uint32 width = 4;

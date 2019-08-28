@@ -28,24 +28,6 @@ config :video_server,
   namespace: VideoServer,
   ecto_repos: [VideoServer.Repo]
 
-# Configures the endpoint
-config :video_server, VideoServerWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "/eAJgbdM3gZfL5V5Z26OQmOWXeS1xycWAHEDifr2qGhWP33IXr9c1byzjnwXId/E",
-  render_errors: [view: VideoServerWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: VideoServer.PubSub, adapter: Phoenix.PubSub.PG2]
-
-config :video_server, VideoServerWeb.Endpoint,
-  http: [port: 4000],
-  debug_errors: true,
-  code_reloader: true,
-  check_origin: false,
-  watchers: []
-
-# Set a higher stacktrace during development. Avoid configuring such
-# in production as building large stacktraces may be expensive.
-config :phoenix, :stacktrace_depth, 20
-
 # Configure your database
 config :video_server, VideoServer.Repo,
   adapter: Ecto.Adapters.Postgres,
@@ -59,6 +41,8 @@ config :video_server, VideoServer.Repo,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: :all
+
+config :grpc, start_server: true
 
 if Mix.env() == :test do
   import_config "test.exs"
