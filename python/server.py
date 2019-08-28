@@ -34,7 +34,8 @@ class Classifier:
         graph = tf.get_default_graph()
 
         # CPU
-        session = tf.Session(graph=graph, config=tf.ConfigProto(device_count={'GPU':0}))
+        session = tf.Session(
+            graph=graph, config=tf.ConfigProto(device_count={'GPU': 0}))
 
         # GPU
         # session = tf.Session(graph=graph, config=tf.ConfigProto(log_device_placement=True))
@@ -45,24 +46,25 @@ class Classifier:
             model._make_predict_function()
 
         else:
-            model = self.load_from_bundle(model_path, model_type)
+            model = self.load_from_bundle(model_path, model_type, session)
+
         self.model = model
         self.session = session
 
         tf.initializers.global_variables()
 
-    def load_from_bundle(self, model_path, model_type):
+    def load_from_bundle(self, model_path, model_type, session):
         def format_line(line):
             return line.lstrip().rstrip().replace('display_name: ', '').replace('"', '')
 
         bundle = tf.saved_model.loader.load(
-            self.session, ['serve'], model_path)
+            session, ['serve'], model_path)
         tf.graph_util.import_graph_def(bundle.graph_def)
-        with open(model_path + b'/labels.pbtxt', 'r') as f:
+        with open(model_path + '/labels.pbtxt', 'r') as f:
             label_names = [format_line(line) for line in f.readlines(
             ) if line.lstrip().rstrip().startswith('display_name')]
         labels = tensorflow_datasets.features.ClassLabel(names=label_names)
-        return PseudoModel(self.session, labels, model_type)
+        return PseudoModel(session, labels, model_type)
 
 
 class PseudoModel():
@@ -141,29 +143,48 @@ class ImageClassifierServicer(classipy_pb2_grpc.ImageClassifierServicer):
 
 
 def get_model_path(filename):
+    path = None
     with open(filename, 'r') as f:
         for line in f.readlines():
             if 'model_path' in line:
-                m = re.match(r'^\s*model_path: "([^"]*)"', line)
-                return './priv/' + m.group(1)
+                try:
+                    m = re.match(r'^\s*model_path: "([^"]*)",', line)
+                    if m and m.group(1):
+                        path = './apps/grpclassify/priv/' + m.group(1)
+                        print("model_path: ", path)
+                        break
+                except Exception as e:
+                    print(e)
+                    pass
+    if path is None:
+        exit(1)
+
+    return path
 
 
-def make_header(s):
+def print_header(s):
     s = ' ' + s + ' '
     header = '||' + '=' * len(s) + '||\n'
-    return header + '||' + s + '||\n' + header
+    print(header + '||' + s + '||\n' + header)
 
 
 def serve():
+    server_address = 'localhost:8001'
+
     global classifier
+    print_header("Getting model path")
     model_path = get_model_path('./config/config.exs')
 
-    classifier = Classifier(model_path, None)
+    print_header("Building classifier")
+    classifier = Classifier(model_path, "ssd")
+
+    print_header("Building server")
     servicer = ImageClassifierServicer()
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     classipy_pb2_grpc.add_ImageClassifierServicer_to_server(servicer, server)
-    server.add_insecure_port('localhost:8000')
-    print(make_header("Starting server"))
+    server.add_insecure_port(server_address)
+    print_header("Starting server")
+    print("Serving at address: " + server_address)
     server.start()
     return server, servicer

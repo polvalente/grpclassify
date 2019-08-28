@@ -20,7 +20,8 @@ import Config
 import Config
 
 config :grpclassify, GRPClassify,
-  model_path: "models/catsdogs/cnn_catsdogs_50.h5",
+  # model_path: "models/catsdogs/cnn_catsdogs_50.h5",
+  model_path: "models/ssd_mobilenet_v1/saved_model",
   image_path: "images/catsdogs/50"
 
 # General application configuration
@@ -57,6 +58,11 @@ config :camera_mock, CameraMockWeb.Endpoint,
   watchers: []
 
 config :phoenix, :stacktrace_depth, 20
+
+config :grpclassify, GRPClassify.Worker,
+  target_url: "localhost:8000",
+  target_streams: [0, 1, 2],
+  classifier_url: "localhost:8001"
 
 if Mix.env() == :test do
   import_config "test.exs"

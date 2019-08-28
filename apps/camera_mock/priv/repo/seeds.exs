@@ -32,7 +32,6 @@ base_path
   path
   |> File.stream!()
   |> NimbleCSV.RFC4180.parse_stream()
-  |> Stream.drop(1)
   |> Stream.map(fn [id, timestamp, num_people, filename] ->
     IO.puts("Saving frame #{id} of stream #{stream_id}")
     filename = Path.join([priv_dir, filename])
