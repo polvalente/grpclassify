@@ -24,12 +24,12 @@ config :grpclassify, GRPClassify,
   image_path: "images/catsdogs/50"
 
 # General application configuration
-config :video_server,
-  namespace: VideoServer,
-  ecto_repos: [VideoServer.Repo]
+config :camera_mock,
+  namespace: CameraMock,
+  ecto_repos: [CameraMock.Repo]
 
 # Configure your database
-config :video_server, VideoServer.Repo,
+config :camera_mock, CameraMock.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
@@ -42,7 +42,21 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: :all
 
-config :grpc, start_server: true
+# Configures the endpoint
+config :camera_mock, CameraMockWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "kMbVD2uOELgrAnyuPSaRlGyYe0f09nugndt3HqOz/Cob9v/x7dtn+Sxha2KcmcJ/",
+  render_errors: [view: CameraMockWeb.ErrorView, accepts: ~w(json)],
+  pubsub: [name: CameraMock.PubSub, adapter: Phoenix.PubSub.PG2]
+
+config :camera_mock, CameraMockWeb.Endpoint,
+  http: [port: 4000],
+  debug_errors: true,
+  code_reloader: true,
+  check_origin: false,
+  watchers: []
+
+config :phoenix, :stacktrace_depth, 20
 
 if Mix.env() == :test do
   import_config "test.exs"

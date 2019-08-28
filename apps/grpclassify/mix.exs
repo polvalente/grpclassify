@@ -26,6 +26,9 @@ defmodule GRPClassify.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [{:protobuf, "~> 0.6.1"}, {:grpc, github: "elixir-grpc/grpc"}]
+    [
+      {:protobuf, "~> 0.6.1"},
+      {:grpc, github: "elixir-grpc/grpc", override: true}
+    ]
   end
 end

@@ -16,7 +16,7 @@ alias CameraMock.Repo
 NimbleCSV.define(Parser, separator: "\t", escape: "\"")
 
 priv_dir =
-  :video_server
+  :camera_mock
   |> :code.priv_dir()
   |> to_string()
 

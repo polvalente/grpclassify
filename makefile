@@ -1,7 +1,7 @@
 SRC=./interop
 ELIXIR_DEST=./apps/grpclassify/lib/interop
 PYTHON_DEST=./python/interop
-ELIXIR_VIDEO_SERVER_DEST=./apps/video_server/lib/interop
+ELIXIR_VIDEO_SERVER_DEST=./apps/camera_mock/lib/interop
 
 all: setup proto
 
@@ -9,6 +9,7 @@ setup:
 	@mkdir -p $(SRC)
 	@mkdir -p $(ELIXIR_DEST)
 	@mkdir -p $(PYTHON_DEST)
+	@mkdir -p $(ELIXIR_VIDEO_SERVER_DEST)
 	@pip install grpcio grpcio-tools
 	@mix deps.get
 	@mix compile

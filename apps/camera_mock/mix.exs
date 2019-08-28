@@ -38,15 +38,19 @@ defmodule CameraMock.Mixfile do
   defp deps do
     [
       {:phoenix, "~> 1.3.4"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
       {:ecto, "~> 3.1"},
       {:ecto_sql, "~> 3.1.6"},
       {:protobuf, "~> 0.6.1"},
-      {:grpc, github: "elixir-grpc/grpc"},
+      {:grpc, github: "elixir-grpc/grpc", override: true},
+      {:cowboy,
+       [
+         env: :prod,
+         git: "https://github.com/elixir-grpc/cowboy.git",
+         tag: "grpc-2.6.3",
+         override: true
+       ]},
       {:nimble_csv, "~> 0.3"}
     ]
   end
