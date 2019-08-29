@@ -26,14 +26,20 @@ class ResultExporter():
     def plot_time_per_batch_vs_timestamps(self):
         # Need only to plot for one stream since they are all equal in time_per_batch
         plt.figure()
+        plt.grid(b='gray')
         stream_id = 0
         print(self.timestamps.shape)
-        timestamps = self.timestamps[stream_id, :]
-        time_per_batch_in_usec = self.total_call_times[stream_id, :]
+        timestamps = self.timestamps[stream_id, 2:]
+        time_per_batch_in_usec = self.total_call_times[stream_id, 2:]
         time_per_batch_in_ms = time_per_batch_in_usec / 1_000
 
+        # scale = 0.01
+        # miny = min(time_per_batch_in_ms)
+        # maxy = max(time_per_batch_in_ms) + scale * miny
+        # miny *= (1 - scale)
+        # plt.ylim((miny, maxy))
+
         ts = pd.Series(time_per_batch_in_ms, index=timestamps)
-        ts.plot(style='b.--')
 
         avg = ts.rolling(window=15, min_periods=1).mean()
 
@@ -42,8 +48,9 @@ class ResultExporter():
             timestamps,
             avg,
             yerr=std,
-            errorevery=10,
-            fmt='k',
+            errorevery=30,
+            fmt='b',
+            ecolor='r',
             linewidth=1.75,
             capsize=5,
             capthick=1.5
@@ -52,11 +59,7 @@ class ResultExporter():
                     'Média móvel (15 amostras, lagging)'], loc='upper left')
         plt.ylabel('Tempo de Processamento por Lote (ms)')
         plt.xlabel('Tempo (s)')
-        scale = 0.01
-        miny = min(time_per_batch_in_ms)
-        maxy = max(time_per_batch_in_ms) + scale * miny
-        miny *= (1 - scale)
-        plt.ylim((miny, maxy))
+        # plt.show()
         plt.savefig('./exported_results/tempo_por_lote_%d_streams.eps' %
                     self.num_streams, format='eps')
 
@@ -99,6 +102,7 @@ for filename in filenames:
     print('Processing file:', filename)
     filename = base_path + filename
     exporter = ResultExporter(filename)
-    exporter.plot_time_per_batch_vs_timestamps()
-    if not 'NO_DROP_FRAMES' in filename:
+    if 'NO_DROP_FRAMES' in filename:
+        exporter.plot_time_per_batch_vs_timestamps()
+    else:
         exporter.export_dropped_frames_table()
