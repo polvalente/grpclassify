@@ -3,6 +3,7 @@ from python.interop import (
     classipy_pb2
 )
 
+import os
 import grpc
 import re
 from concurrent import futures
@@ -23,6 +24,16 @@ classifier = None
 model = None
 session = None
 graph = None
+
+if os.getenv("DISABLE_LOGGING") == "true":
+    should_log = False
+else:
+    should_log = True
+
+
+def log(*args, **kwargs):
+    if should_log:
+        print(*args, **kwargs)
 
 
 class Classifier:
@@ -98,7 +109,7 @@ class PseudoModel():
 
             return filtered
 
-        print("model_type:", self.model_type)
+        log("* model_type:", self.model_type)
         if self.model_type == "ssd_mobilenet":
             image_tensor = get_tensor("image_tensor:0")
 
@@ -149,11 +160,11 @@ class ImageClassifierServicer(classipy_pb2_grpc.ImageClassifierServicer):
         global classifier
         sender_pid = request.sender_pid
 
-        print_header("Start Classification")
+        log_header("Start Classification")
         classification_result = classify(
             [i.content for i in request.images], False)
 
-        print("* Finished classification")
+        log("* Finished classification")
 
         def format_and_dump(result):
             formatted = []
@@ -183,10 +194,10 @@ def get_model_path(filename):
                     m = re.match(r'^\s*model_path: "([^"]*)",', line)
                     if m and m.group(1):
                         path = './apps/grpclassify/priv/' + m.group(1)
-                        print("model_path: ", path)
+                        log("* model_path: ", path)
                         break
                 except Exception as e:
-                    print(e)
+                    log(e)
                     pass
     if path is None:
         exit(1)
@@ -194,29 +205,29 @@ def get_model_path(filename):
     return path
 
 
-def print_header(s):
+def log_header(s):
     s = ' ' + s + ' '
     header = '||' + '=' * len(s) + '||\n'
-    print(header + '||' + s + '||\n' + header)
+    log(header + '||' + s + '||\n' + header)
 
 
 def serve():
     server_address = 'localhost:8001'
 
     global classifier
-    print_header("Getting model path")
+    log_header("Getting model path")
     model_path = get_model_path('./config/config.exs')
 
-    print_header("Building classifier")
+    log_header("Building classifier")
     classifier = Classifier(model_path, "ssd_mobilenet")
 
-    print_header("Building server")
+    log_header("Building server")
     servicer = ImageClassifierServicer()
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     classipy_pb2_grpc.add_ImageClassifierServicer_to_server(servicer, server)
     server.add_insecure_port(server_address)
-    print_header("Starting server")
+    log_header("Starting server")
     print("Serving at address: " + server_address)
     server.start()
     return server, servicer

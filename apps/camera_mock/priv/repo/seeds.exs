@@ -39,6 +39,7 @@ base_path
 
     {id, ""} = Integer.parse(id)
     {num_people, ""} = Integer.parse(num_people)
+    {timestamp, ""} = Float.parse(timestamp)
 
     Repo.insert!(%CameraMock.Schemas.Frame{
       stream_id: stream_id,

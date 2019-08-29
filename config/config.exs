@@ -67,3 +67,10 @@ config :grpclassify, GRPClassify.Worker,
 if Mix.env() == :test do
   import_config "test.exs"
 end
+
+config :camera_mock, CameraMock,
+  drop_frames: System.get_env("DROP_FRAMES", "false") |> String.to_atom()
+
+if System.get_env("DISABLE_LOGGING", "false") |> String.to_atom() do
+  config :logger, backends: []
+end

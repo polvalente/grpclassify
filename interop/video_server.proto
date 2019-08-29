@@ -2,7 +2,7 @@ syntax = "proto3";
 package video_server;
 
 message Frame {
-    string timestamp = 1;
+    float timestamp = 1;
     uint32 id = 2;
     uint32 height = 3;
     uint32 width = 4;
@@ -16,9 +16,9 @@ message Request {
 
 message Response {
     Frame frame = 1;
-    uint32 next_frame_id = 2;
+    int32 next_frame_id = 2;
 }
 
-service VideoServer {
+service Streamer {
     rpc get_frame(Request) returns (Response) {};
 }

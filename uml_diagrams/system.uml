@@ -1,0 +1,39 @@
+@startuml
+hide empty description
+
+state "Sistema Gerenciador" as manager {
+    state "Worker" as worker {
+        [*] --> fetch_frames : Processo recebe mensagem\nagendada para buscar quadros
+        state "Buscar Quadros" as fetch_frames {
+            state "Abrir Conexão\ngRPC" as fetch_frames_open_grpc
+            state "Fechar Conexão\ngRPC" as fetch_frames_close_grpc
+
+            fetch_frames_open_grpc : Conexão com o Streamer
+            fetch_frames_open_grpc : Comunicação síncrona\npara recuperar quadros
+
+            fetch_frames_open_grpc --> fetch_frames_close_grpc : Após receber a resposta
+            fetch_frames_close_grpc --> classify_frames
+        }
+
+        state "Classificação" as classify_frames
+        classify_frames : Comunicação síncrona\ncom o classificador
+        classify_frames -down-> [*] : Agenda próxima busca\nEnvia mensagem para\nguardar ou processar os resultados
+    }
+    ||
+    state "Armazenador de Resultados" as result_storage {
+        state "Guardar Resultados" as store_result
+        [*] --> store_result : Processo recebe mensagem para guardar resultados
+        store_result --> [*]
+        --
+        state "Processar Resultados" as process_result
+        [*] --> process_result : Processo recebe mensagem para processar os resultados
+        process_result --> [*] : Salva arquivo .csv em disco
+    }
+}
+
+[*] -down-> start_manager : Inicialização
+state "Inicialização" as start_manager
+start_manager : Configura as condições iniciais do sistema
+start_manager : Inicia os dois processos
+start_manager --> manager
+@enduml
