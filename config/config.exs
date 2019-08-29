@@ -60,9 +60,9 @@ config :camera_mock, CameraMockWeb.Endpoint,
 config :phoenix, :stacktrace_depth, 20
 
 config :grpclassify, GRPClassify.Worker,
-  target_url: "localhost:8000",
+  target_url: "172.31.41.212:8000",
   streams_to_process: [0, 1, 2],
-  classifier_url: "localhost:8001"
+  classifier_url: "172.31.33.174:8001"
 
 if Mix.env() == :test do
   import_config "test.exs"

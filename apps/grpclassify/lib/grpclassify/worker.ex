@@ -39,15 +39,18 @@ defmodule GRPClassify.Worker do
 
     start_time = Time.utc_now()
     {:ok, channel} = GRPC.Stub.connect(target_url)
+    Logger.debug("Connected to streamer", streams: inspect(target_streams))
 
     responses =
       Enum.map(target_streams, fn {stream, %{current_frame_id: frame}} ->
+	Logger.debug("Fetching stream", stream_id: inspect(stream), frame_id: inspect(frame))
         request = VideoServer.Request.new(stream_id: stream, frame_id: frame)
         {:ok, frame} = VideoServer.Streamer.Stub.get_frame(channel, request)
         {stream, frame}
       end)
 
     GRPC.Stub.disconnect(channel)
+    Logger.debug("Disconnected from streamer")
 
     responses =
       responses
@@ -74,7 +77,9 @@ defmodule GRPClassify.Worker do
         Classipy.Image.new(filename: to_string(stream_id), content: content)
       end)
 
+    Logger.info("Connecting to classifier")
     {:ok, channel} = GRPC.Stub.connect(classifier_url)
+    Logger.debug("Connected to classifier")
 
     request = Classipy.ImageRequest.new(sender_pid: "#{__MODULE__}", images: images)
 
@@ -105,8 +110,10 @@ defmodule GRPClassify.Worker do
     schedule_work(0)
     {:noreply, state}
   rescue
-    _ ->
+    error ->
+      Logger.error("Failed to fetch frames", reason: inspect(error))
       schedule_work(15)
+      {:noreply, state}
   end
 
   defp schedule_work(time \\ 30) do
