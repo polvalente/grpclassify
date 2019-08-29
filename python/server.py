@@ -212,7 +212,7 @@ def log_header(s):
 
 
 def serve():
-    server_address = 'localhost:8001'
+    server_address = '0.0.0.0:8001'
 
     global classifier
     log_header("Getting model path")
